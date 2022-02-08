@@ -1,6 +1,7 @@
 import clientlib.wrapper as wrapper
 
 
+# TODO implement
 class Connect4State(wrapper.GenericGameState):
     players = []
     state = "waiting"
@@ -26,12 +27,13 @@ class Connect4State(wrapper.GenericGameState):
         return self.state == "wait"
 
 
+# TODO implement
 class Connect4Move(wrapper.GenericGameMove):
     def encode_game_state(self):
         pass
 
 
-
 if __name__ == '__main__':
-    print('Hello, World!')
+    client = wrapper.GenericGameClient('connect_4')
+    client.join_game("game_156684636527260407708829519575458565160", "theo")
 
