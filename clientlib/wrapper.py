@@ -21,6 +21,7 @@ class ClientLibInternalException(ClientLibBaseException):
 
 
 class GenericGameState:
+    """ Player agnostic representation of the game state """
     def update_game_state(self, encoded_game_state: dict):
         """
         Update the game state stored in the object given a dict
@@ -30,7 +31,8 @@ class GenericGameState:
 
 
 class GenericGameMove:
-    def encode_game_state(self):
+    """ Representation of a move to facilitate parsing """
+    def encode_game_move(self):
         """
         Convert the move to a dict/JSON-like format
         :return:
@@ -47,12 +49,13 @@ class GenericGameClient:
         self.session_id = ""
 
     # Create game
-    def create_game(self):
-        res = requests.post("{}/api/create-game".format(BASE_URL), json={"name": self.game_type})
+    @staticmethod
+    def create_game(game_type):
+        res = requests.post("{}/api/create-game".format(BASE_URL), json={"name": game_type})
         if res.ok:
             res_json = res.json()
             if res_json['game_id'] != "":
-                self.game_id = res_json['game_id']
+                return res_json['game_id']
             else:
                 raise ClientLibRequestException("No Game Id Returned")
         else:
@@ -97,7 +100,7 @@ class GenericGameClient:
         if self.session_id is None:
             raise ClientLibInternalException("No Session Id provided. Please call join_game to join a game first.")
         res = requests.post("{}/api/{}/submit-move".format(BASE_URL, self.game_id),
-                            json={"session_id": self.session_id, "payload": move.encode_game_state()})
+                            json={"session_id": self.session_id, "payload": move.encode_game_move()})
         if res.ok:
             res_json = res.json()
             if not res_json["updated"]:
@@ -111,7 +114,7 @@ class GenericGameClient:
         """ Blocks and waits for server to respond.
         Returns true when SOME update has happened, false if timeout (5 seconds)"""
         try:
-            res = requests.get("{}/api/{}/wait-for-update".format(BASE_URL, self.game_id), timeout=5)
+            res = requests.get("{}/api/{}/wait-for-update".format(BASE_URL, self.game_id))
         except requests.exceptions.Timeout as e:
             return False
         if res is not None:
