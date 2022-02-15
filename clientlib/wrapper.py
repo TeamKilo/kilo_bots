@@ -47,6 +47,7 @@ class GenericGameClient:
         self.game_id = game_id
         self.game_state = None
         self.session_id = ""
+        self.clock = -1
 
     # Create game
     @staticmethod
@@ -66,8 +67,8 @@ class GenericGameClient:
             self.username = username
         if game_id is not None:
             self.game_id = game_id
-        res = requests.post("{}/api/join-game".format(BASE_URL),
-                            json={"game_id": self.game_id, "username": self.username})
+        res = requests.post("{}/api/{}/join-game".format(BASE_URL, self.game_id),
+                            json={"username": self.username})
         if res.ok:
             res_json = res.json()
             if res_json['session_id'] != "":
@@ -103,7 +104,7 @@ class GenericGameClient:
                             json={"session_id": self.session_id, "payload": move.encode_game_move()})
         if res.ok:
             res_json = res.json()
-            if not res_json["updated"]:
+            if not res_json["success"]:
                 raise ClientLibRequestException("Update failed")
             else:
                 return
@@ -120,7 +121,11 @@ class GenericGameClient:
         if res is not None:
             if res.ok:
                 res_json = res.json()
-                return res_json["updated"]
+                clk = int(res_json["clock"])
+                if clk > self.clock:
+                    self.clock = clk
+                    return True
+                return False
             else:
                 raise ClientLibRequestException(res.reason, res.status_code)
         return False
