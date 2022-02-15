@@ -30,7 +30,6 @@ def main(agent):
     # Now players should have joined and the game started
     print("Game started.")
     while state.is_in_progress():
-        # TODO fix backend
         print(state)
         # If you can make move
         if state.player_can_move(client.username):
@@ -40,7 +39,6 @@ def main(agent):
             client.update_state(state)
             print(state)
             if state.is_ended(): break
-        # TODO fix backend
         # Spin while waiting for update
         while not client.wait_for_update():
             print("Waiting")

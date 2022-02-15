@@ -47,7 +47,7 @@ class GenericGameClient:
         self.game_id = game_id
         self.game_state = None
         self.session_id = ""
-        self.clock = -1
+        self.clock = 0
 
     # Create game
     @staticmethod
@@ -115,7 +115,7 @@ class GenericGameClient:
         """ Blocks and waits for server to respond.
         Returns true when SOME update has happened, false if timeout (5 seconds)"""
         try:
-            res = requests.get("{}/api/{}/wait-for-update".format(BASE_URL, self.game_id))
+            res = requests.get("{}/api/{}/wait-for-update".format(BASE_URL, self.game_id), params={"since": self.clock})
         except requests.exceptions.Timeout as e:
             return False
         if res is not None:
