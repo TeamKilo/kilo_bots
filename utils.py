@@ -23,7 +23,7 @@ class Connect4State(wrapper.GenericGameState):
     def __init__(self):
         # TODO rename
         self.players = []
-        self.state = "waiting"  # waiting | in_progress | ended
+        self.stage = "waiting"  # waiting | in_progress | ended
         self.can_move = []
         self.winners = []
         self.game_name = "connect_4"
@@ -31,19 +31,19 @@ class Connect4State(wrapper.GenericGameState):
 
     def update_game_state(self, encoded_game_state: dict):
         self.players = encoded_game_state['players']
-        self.state = encoded_game_state['state']
+        self.stage = encoded_game_state['stage']
         self.can_move = encoded_game_state['can_move']
         self.winners = encoded_game_state['winners']
         self.game_state = encoded_game_state['payload']
 
     def is_waiting_for_start(self) -> bool:
-        return self.state == "waiting"
+        return self.stage == "waiting"
 
     def is_ended(self) -> bool:
-        return self.state == "ended"
+        return self.stage == "ended"
 
     def is_in_progress(self) -> bool:
-        return self.state == "in_progress"
+        return self.stage == "in_progress"
 
     def player_can_move(self, username_) -> bool:
         return username_ in self.can_move
@@ -82,4 +82,4 @@ winner: {}
 GAME BOARD
 {}
 ------------------
-'''.format(self.state, self.players, self.can_move, self.winners, self.print_state())
+'''.format(self.stage, self.players, self.can_move, self.winners, self.print_state())
