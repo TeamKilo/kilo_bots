@@ -1,3 +1,5 @@
+import copy
+
 import clientlib.wrapper as wrapper
 
 
@@ -21,13 +23,14 @@ class Connect4State(wrapper.GenericGameState):
     GAME_BOARD_WIDTH = 7
 
     def __init__(self):
-        # TODO rename
+        # TODO encapsulate
         self.players = []
         self.stage = "waiting"  # waiting | in_progress | ended
         self.can_move = []
         self.winners = []
         self.game_name = "connect_4"
         self.game_state = {"cells": [[]], "winner": ""}
+        self.symbol_player_map = {}
 
     def update_game_state(self, encoded_game_state: dict):
         self.players = encoded_game_state['players']
@@ -35,6 +38,10 @@ class Connect4State(wrapper.GenericGameState):
         self.can_move = encoded_game_state['can_move']
         self.winners = encoded_game_state['winners']
         self.game_state = encoded_game_state['payload']
+        if len(self.symbol_player_map) == 0 and len(self.players) == 2:
+            # Game has just got enough players: update symbol player map for consistency in the to_O_X method
+            self.symbol_player_map[self.players[0]] = 'O'
+            self.symbol_player_map[self.players[1]] = 'X'
 
     def is_waiting_for_start(self) -> bool:
         return self.stage == "waiting"
@@ -56,16 +63,16 @@ class Connect4State(wrapper.GenericGameState):
     def has_won(self, username_) -> bool:
         return self.is_ended() and username_ in self.winners
 
+    def to_O_X(self):
+        ret = list(map(lambda col: list(map(lambda el: self.symbol_player_map[el], col)), self.game_state['cells']))
+        return ret
+
     def print_state(self):
-        symbol_player_map = {
-            self.players[0]: "O",
-            self.players[1]: "X"
-        }
         res = ""
         for col in self.game_state["cells"]:
             for row in col:
                 res += "|"
-                res += symbol_player_map[row]
+                res += self.symbol_player_map[row]
             res += "|\n"
             for _ in range(len(col) * 2 + 1):
                 res += "-"

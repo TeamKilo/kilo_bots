@@ -1,3 +1,4 @@
+from mcts import mcts
 from utils import Connect4State, Connect4Move
 import random
 import copy
@@ -26,6 +27,10 @@ class Connect4RandomAgent(Connect4BaseAgent):
 
 
 class Connect4MCTSAgent(Connect4BaseAgent):
+    def __init__(self, username: str, timelimit: float, probabilistic: bool):
+        self._username = username
+        self._timelimit = timelimit
+        self._probabilistic = probabilistic
+
     def get_next_move(self, state: Connect4State) -> Connect4Move:
-        # TODO: implement
-        pass
+        return Connect4Move(mcts(state.to_O_X(), state.symbol_player_map[self._username], self._timelimit, self._probabilistic))
