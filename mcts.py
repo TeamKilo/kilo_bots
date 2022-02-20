@@ -352,19 +352,35 @@ def mcts(state: List[List[str]], turn: str, time_limit: float, probabilistic=Fal
             leaf = promising_node
         simulation_result = rollout(leaf)
         backpropagate(leaf, simulation_result)
+    print("--CHOICES--")
+    print(list(map(lambda n: (n.last_move, n.wins, n.visits), root.children)))
     return best_child(root).last_move
 
 
 if __name__ == '__main__':
-    state_ = [['X', 'X', 'O'],
-              ['X', 'X', 'X'],
-              ['O', 'O', 'O', 'X'],
-              ['X', 'O', 'O', 'X', 'O'],
-              ['X', 'X', 'X', 'O', 'O'],
-              ['X', 'X', 'X', 'X'],
-              ['O']]
-    # print(check_win(state_))
-    print(mcts(state_, 'O', 5))
+    # state_ = [['X', 'X', 'O'],
+    #           ['X', 'X', 'X'],
+    #           ['O', 'O', 'O', 'X'],
+    #           ['X', 'O', 'O', 'X', 'O'],
+    #           ['X', 'X', 'X', 'O', 'O'],
+    #           ['X', 'X', 'X', 'X'],
+    #           ['O']]
+    # state_ = [[],
+    #          ['X'],
+    #          [],
+    #          ['O', 'X'],
+    #          ['X', 'O', 'X'],
+    #          ['O', 'O', 'O'],
+    #          ['X', 'O']]
+    state_ = [[],
+              ['O'],
+              [],
+              ['X', 'O', 'O', 'X'],
+              ['O', 'X', 'X'],
+              ['O', 'X'],
+              []]
+    print(check_win(state_))
+    print(mcts(state_, 'O', 1, False))
 
 # Note: inspired from
 # https://www.geeksforgeeks.org/ml-monte-carlo-tree-search-mcts/

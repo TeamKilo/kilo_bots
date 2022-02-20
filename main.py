@@ -27,9 +27,9 @@ def main(agent: Connect4BaseAgent, username, game_id):
     # Now players should have joined and the game started
     print("Game started.")
     while state.is_in_progress():
-        print(state)
         # If you can make move
         if state.player_can_move(client.username):
+            print(state)
             # Make Move
             client.submit_move(move=agent.get_next_move(state))
             client.update_state(state)
@@ -52,7 +52,7 @@ def main(agent: Connect4BaseAgent, username, game_id):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Main script for the game client.")
     parser.add_argument('-a', '--agent', type=str, help="the agent to be run: i for interactive; r "
-                                                        "for random; m1|m3 for MCTS agent with deterministic"
+                                                        "for random; m1|m3 for MCTS agent with deterministic "
                                                         "selection and 1|3 seconds time; m5p|m10p for one with "
                                                         "probabilistic selection and 5|10 seconds time.", required=True)
     parser.add_argument('-u', '--username', type=str, help="the username given to the bot.", required=True)
