@@ -36,7 +36,8 @@ class Node:
 
 
 def step(state: List[List[str]], turn: str, move: int, copy=False):
-    """ Step the state
+    """
+    Step the state
 
     :param copy: perform deep copy if set to true, otherwise just step it
     :param turn 1 or -1
@@ -63,8 +64,7 @@ def valid_moves(state: List[List[str]]) -> Tuple[List[int], Optional[str]]:
     Compute the valid moves for a given state
 
     :param state: current state
-    :return: (valid_move_list, None) if there are valid moves, or ([], winner) if the game ended
-    where winner is 'O', 'X' or 'draw'.
+    :return: (valid_move_list, None) if there are valid moves, or ([], winner) if the game ended where winner is 'O', 'X' or 'draw'.
     """
     # if game ended, then just return empty list
     winner = check_win(state)
@@ -285,7 +285,7 @@ def rollout(node: Node):
     :param node: the leaf node you want to rollout
     :return: the player who won
     """
-    state = node.state
+    state = deepcopy(node.state)
     if DEBUG:
         print("-- ROLLOUT --")
         print(state)
@@ -372,13 +372,20 @@ if __name__ == '__main__':
     #          ['X', 'O', 'X'],
     #          ['O', 'O', 'O'],
     #          ['X', 'O']]
-    state_ = [[],
-              ['O'],
-              [],
-              ['X', 'O', 'O', 'X'],
-              ['O', 'X', 'X'],
-              ['O', 'X'],
-              []]
+    # state_ = [[],
+    #           ['O'],
+    #           [],
+    #           ['X', 'O', 'O', 'X'],
+    #           ['O', 'X', 'X'],
+    #           ['O', 'X'],
+    #           []]
+    state_ = [['O', 'O'],
+              ['O', 'X', 'O', 'X'],
+              ['X'],
+              ['O', 'X', 'X', 'X'],
+              ['X', 'O', 'O'],
+              ['X', 'X', 'X', 'O'],
+              ['O']]
     print(check_win(state_))
     print(mcts(state_, 'O', 1, False))
 
