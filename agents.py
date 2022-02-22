@@ -1,7 +1,6 @@
 from mcts import mcts
 from utils import Connect4State, Connect4Move
 import random
-import copy
 
 
 class Connect4BaseAgent:

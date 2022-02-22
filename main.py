@@ -2,8 +2,10 @@ import sys
 
 import clientlib.wrapper as wrapper
 from agents import Connect4InteractiveAgent, Connect4RandomAgent, Connect4BaseAgent, Connect4MCTSAgent
-from utils import Connect4State, Connect4Move
+from utils import Connect4State
 import argparse
+
+from your_own_bot import Connect4UserDefinedAgent
 
 GAME_TYPE = "connect_4"
 
@@ -64,6 +66,7 @@ if __name__ == '__main__':
         "m1": Connect4MCTSAgent(parsed_args.username, 1, False),
         "m3": Connect4MCTSAgent(parsed_args.username, 3, False),
         "m5": Connect4MCTSAgent(parsed_args.username, 5, False),
-        "m10p": Connect4MCTSAgent(parsed_args.username, 10, True)
+        "m10p": Connect4MCTSAgent(parsed_args.username, 10, True),
+        "c": Connect4UserDefinedAgent()
     }
     main(agent_map[parsed_args.agent], parsed_args.username, parsed_args.game)

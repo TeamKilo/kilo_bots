@@ -1,5 +1,3 @@
-# TODO: test if it works :)
-
 import math
 import sys
 import time
