@@ -52,7 +52,7 @@ class GenericGameClient:
     # Create game
     @staticmethod
     def create_game(game_type):
-        res = requests.post("{}/api/create-game".format(BASE_URL), json={"name": game_type})
+        res = requests.post("{}/api/create-game".format(BASE_URL), json={"game_type": game_type})
         if res.ok:
             res_json = res.json()
             if res_json['game_id'] != "":

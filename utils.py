@@ -13,6 +13,7 @@ class Connect4Move(wrapper.GenericGameMove):
 
     def encode_game_move(self):
         return {
+            "game_type": "connect_4",
             "column": self.move
         }
 
@@ -29,7 +30,7 @@ class Connect4State(wrapper.GenericGameState):
         self.can_move = []
         self.winners = []
         self.game_name = "connect_4"
-        self.game_state = {"cells": [[]], "winner": ""}
+        self.game_state = {"game_type": "", "cells": [[]], "winner": ""}
         self.symbol_player_map = {}
 
     def update_game_state(self, encoded_game_state: dict):
