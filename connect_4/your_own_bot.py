@@ -1,5 +1,5 @@
-from utils import Connect4State, Connect4Move
-from agents import Connect4BaseAgent
+from .utils import Connect4State, Connect4Move
+from .agents import Connect4BaseAgent
 
 
 class Connect4UserDefinedAgent(Connect4BaseAgent):

@@ -3,7 +3,7 @@ import sys
 import time
 from typing import List, Tuple, Optional
 
-from utils import Connect4State
+from .utils import Connect4State
 from copy import deepcopy
 
 import random

@@ -21,13 +21,41 @@ class ClientLibInternalException(ClientLibBaseException):
 
 
 class GenericGameState:
-    """ Player agnostic representation of the game state """
+    def __init__(self):
+        """
+        Player agnostic representation of the game state
+        """
+        self.players = []
+        self.stage = "waiting"  # waiting | in_progress | ended
+        self.can_move = []
+        self.winners = []
+        self.game_state = {}
+
     def update_game_state(self, encoded_game_state: dict):
         """
         Update the game state stored in the object given a dict
         :return: ()
         """
-        pass
+        self.players = encoded_game_state['players']
+        self.stage = encoded_game_state['stage']
+        self.can_move = encoded_game_state['can_move']
+        self.winners = encoded_game_state['winners']
+        self.game_state = encoded_game_state['payload']
+
+    def is_waiting_for_start(self) -> bool:
+        return self.stage == "waiting"
+
+    def is_ended(self) -> bool:
+        return self.stage == "ended"
+
+    def is_in_progress(self) -> bool:
+        return self.stage == "in_progress"
+
+    def player_can_move(self, username_) -> bool:
+        return username_ in self.can_move
+
+    def has_won(self, username_) -> bool:
+        return self.is_ended() and username_ in self.winners
 
 
 class GenericGameMove:

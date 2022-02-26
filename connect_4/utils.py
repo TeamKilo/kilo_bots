@@ -24,45 +24,20 @@ class Connect4State(wrapper.GenericGameState):
     GAME_BOARD_WIDTH = 7
 
     def __init__(self):
-        # TODO encapsulate
-        self.players = []
-        self.stage = "waiting"  # waiting | in_progress | ended
-        self.can_move = []
-        self.winners = []
-        self.game_name = "connect_4"
-        self.game_state = {"game_type": "", "cells": [[]], "winner": ""}
+        super(Connect4State, self).__init__()
         self.symbol_player_map = {}
 
     def update_game_state(self, encoded_game_state: dict):
-        self.players = encoded_game_state['players']
-        self.stage = encoded_game_state['stage']
-        self.can_move = encoded_game_state['can_move']
-        self.winners = encoded_game_state['winners']
-        self.game_state = encoded_game_state['payload']
+        super(Connect4State, self).update_game_state(encoded_game_state)
         if len(self.symbol_player_map) == 0 and len(self.players) == 2:
             # Game has just got enough players: update symbol player map for consistency in the to_O_X method
             self.symbol_player_map[self.players[0]] = 'O'
             self.symbol_player_map[self.players[1]] = 'X'
 
-    def is_waiting_for_start(self) -> bool:
-        return self.stage == "waiting"
-
-    def is_ended(self) -> bool:
-        return self.stage == "ended"
-
-    def is_in_progress(self) -> bool:
-        return self.stage == "in_progress"
-
-    def player_can_move(self, username_) -> bool:
-        return username_ in self.can_move
-
     def validate_move(self, move_) -> bool:
         if isinstance(move_, Connect4Move):
             move_ = move_.move
         return 0 <= int(move_) < len(self.game_state['cells'])
-
-    def has_won(self, username_) -> bool:
-        return self.is_ended() and username_ in self.winners
 
     def to_O_X(self):
         ret = list(map(lambda col: list(map(lambda el: self.symbol_player_map[el], col)), self.game_state['cells']))

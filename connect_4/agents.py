@@ -1,5 +1,5 @@
-from mcts import mcts
-from utils import Connect4State, Connect4Move
+from .mcts import mcts
+from .utils import Connect4State, Connect4Move
 import random
 
 
