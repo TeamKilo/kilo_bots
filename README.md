@@ -1,6 +1,6 @@
 # Kilo Bots
 This repo contains a client side library for the general API,
-an example game state management class for a Connect 4 game, and 
+an example game state management class for a Connect 4 game and a Snake game, and 
 a few example bots.
 
 ## Client side library: 
@@ -9,16 +9,17 @@ _clientlib/wrapper.py_
 TODO
 
 ## Sample Bots: 
-_agents.py_
+_\<game_type\>/agents.py_
 
 TODO
 
 - Random Agent
 - Interactive Agent
-- MCTS (UCT) Agent
+- MCTS (UCT) Agent for Connect4
 
 ## Games supported
 - Connect4
+- Snake # TODO TEST
 
 ## Development
 
@@ -26,7 +27,7 @@ TODO
 
 Run the program with
 ```shell
-python main.py [-h] -a AGENT -u USERNAME [-g GAME]
+python main.py [-h] -t GAME_TYPE -a AGENT -u USERNAME [-g GAME_ID]
 ```
 Note that if the `-g` argument isn't present, then a new game will be created.
 
