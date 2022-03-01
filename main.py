@@ -1,25 +1,33 @@
 import sys
-
-import clientlib.wrapper as wrapper
-from connect_4.agents import Connect4InteractiveAgent, Connect4RandomAgent, Connect4MCTSAgent
-from connect_4.utils import Connect4State
 import argparse
 
+import clientlib.wrapper as wrapper
+
+from connect_4.agents import Connect4InteractiveAgent, Connect4RandomAgent, Connect4MCTSAgent
+from connect_4.utils import Connect4State
 from connect_4.your_own_bot import Connect4UserDefinedAgent
+
 from snake.agents import SnakeInteractiveAgent, SnakeRandomAgent
+from snake.utils import SnakeState
 from snake.your_own_bot import SnakeUserDefinedAgent
 
 
 def main(agent, username, game_id, game_type):
     # Create game ?
     if game_id is None or game_id[0:5] != "game_":
-        game_id = wrapper.GenericGameClient.create_game("connect_4")
+        game_id = wrapper.GenericGameClient.create_game(game_type)
     print("Using game_id: {}".format(game_id))
     # Join game ?
     client = wrapper.GenericGameClient(game_type, game_id, username)
     client.join_game()
     # Now wait until others join
-    state = Connect4State()
+    state = None
+
+    if game_type == 'connect_4':
+        state = Connect4State()
+    elif game_type == 'snake':
+        state = SnakeState()
+
     client.update_state(state)
     while state.is_waiting_for_start():
         while not client.wait_for_update():

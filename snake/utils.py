@@ -20,8 +20,10 @@ class SnakeMove(wrapper.GenericGameMove):
 
 
 class SnakeState(wrapper.GenericGameState):
-    GAME_BOARD_HEIGHT = 100
-    GAME_BOARD_WIDTH = 100
+    MIN_X = -100
+    MIN_Y = -100
+    MAX_X = 100
+    MAX_Y = 100
 
     def __init__(self):
         super(SnakeState, self).__init__()
@@ -33,12 +35,12 @@ class SnakeState(wrapper.GenericGameState):
         moves = []
         players = self.game_state["players"]
         if username in players:
-            if players[username][0]["x"] < SnakeState.GAME_BOARD_WIDTH:
+            if players[username][0]["x"] < SnakeState.MAX_X:
                 moves.append("right")
-            if players[username][0]["x"] > 0:
+            if players[username][0]["x"] > SnakeState.MIN_X:
                 moves.append("left")
-            if players[username][0]["y"] > 0:
-                moves.append("up")
-            if players[username][0]["y"] < SnakeState.GAME_BOARD_HEIGHT:
+            if players[username][0]["y"] > SnakeState.MIN_Y:
                 moves.append("down")
+            if players[username][0]["y"] < SnakeState.MAX_Y:
+                moves.append("up")
         return moves
