@@ -7,7 +7,7 @@ from connect_4.agents import Connect4InteractiveAgent, Connect4RandomAgent, Conn
 from connect_4.utils import Connect4State
 from connect_4.your_own_bot import Connect4UserDefinedAgent
 
-from snake.agents import SnakeInteractiveAgent, SnakeRandomAgent
+from snake.agents import SnakeInteractiveAgent, SnakeRandomAgent, SnakeGoForFruitAgent
 from snake.utils import SnakeState
 from snake.your_own_bot import SnakeUserDefinedAgent
 
@@ -44,7 +44,6 @@ def main(agent, username, game_id, game_type):
             client.submit_move(move=agent.get_next_move(state))
             client.update_state(state)
             print(state)
-            if state.is_ended(): break
         # Spin while waiting for update
         while not client.wait_for_update():
             print("Waiting")
@@ -75,18 +74,19 @@ if __name__ == '__main__':
 
     connect_4_agent_map = {
         "i": Connect4InteractiveAgent(),
-        "r": Connect4RandomAgent(),
+        "r": Connect4RandomAgent(parsed_args.username),
         "m50": Connect4MCTSAgent(parsed_args.username, 0.05, False),
         "m300": Connect4MCTSAgent(parsed_args.username, 0.3, False),
         "m700": Connect4MCTSAgent(parsed_args.username, 0.7, False),
         "m1000": Connect4MCTSAgent(parsed_args.username, 1, False),
         "m3000": Connect4MCTSAgent(parsed_args.username, 3, False),
-        "c": Connect4UserDefinedAgent()
+        "c": Connect4UserDefinedAgent(parsed_args.username)
     }
 
     snake_agent_map = {
         "i": SnakeInteractiveAgent(),
         "r": SnakeRandomAgent(parsed_args.username),
+        "f": SnakeGoForFruitAgent(parsed_args.username),
         "c": SnakeUserDefinedAgent(parsed_args.username)
     }
 

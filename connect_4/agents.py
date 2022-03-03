@@ -17,6 +17,9 @@ class Connect4InteractiveAgent(Connect4BaseAgent):
 
 
 class Connect4RandomAgent(Connect4BaseAgent):
+    def __init__(self, username):
+        self._username = username
+
     def get_next_move(self, state: Connect4State) -> Connect4Move:
         valid_moves = []
         for i, row in enumerate(state.game_state['cells']):

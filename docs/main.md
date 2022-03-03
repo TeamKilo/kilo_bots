@@ -37,19 +37,101 @@ It is rather straightforward to use so we won't include details here.
 
 ## Creating a bot for connect 4
 
-TODO
+In this section we will create a simple client for the connect-4 game.
 
 ### Step 1: SETUP
 
+First, clone the repository.
+```shell
+git clone https://github.com/TeamKilo/kilo_bots.git
+```
+or if you have an ssh key setup for GitHub,
+```shell
+git clone git@github.com:TeamKilo/kilo_bots.git
+```
+
+In the directory you'll see:
+- `main.py`: the main driver file of the bots
+- `/docs`: the folder containing this tutorial
+- `/connect_4`: connect-4-specific client code
+- `/snake`: snake-specific client code
+- `/clientlib`: a generic client side library
+
 #### The client side library
 
+The client side library wraps around our API so that the user can just call a function 
+instead of using `requests` to make the requests yourself. The main class of this client is `wrapper.GenericGameClient`,
+which needs a game-specific implementation of `GenericGameState` and `GenericGameMove` to work.
+
+The State object is in charge of storing a local state and stepping it forth when there are state updates. 
+
+The Move object is a uniform representation of the game move, and has a `encode_game_move` function that will encode 
+the move into the game-specific move format, as specified by the API specs.
+
+Of course, this has been provided for you in `<game>/utils.py` for each game supported.
+
 #### The bots available
+__A bot takes is something that has to take in the current game state as an input, 
+and output the next move it's going to play.__
+
+A bot is just a class like the following:
+
+```python
+class Connect4RandomAgent(Connect4BaseAgent):
+    def get_next_move(self, state: Connect4State) -> Connect4Move:
+        # Get all the valid moves that one can make
+        valid_moves = []
+        for i, row in enumerate(state.game_state['cells']):
+            if len(row) < Connect4State.GAME_BOARD_HEIGHT:
+                valid_moves.append(i)
+        # Make a random move
+        return Connect4Move(random.choice(valid_moves))
+```
+
+This is a bot that will play a random valid move. 
+More generally, a bot looks like this:
+```python
+class Connect4Agent(Connect4BaseAgent):
+    def __init__(self, username):
+        self._username = username
+
+    def get_next_move(self, state: Connect4State) -> Connect4Move:
+        # DO SOMETHING
+        return Connect4Move(YOUR_MOVE)
+```
+
+You can check what agents are available by inspecting `main.py` or by doing
+```shell
+python main.py -h/--help
+```
+
+For connect-4, we have an interactive agent, a random agent, and an strong agent using Monte Carlo Tree Search which 
+you can change the strength by changing the computation time.
 
 #### How to run the bots
+
+You can then run the bot you want by doing
+```shell
+python main.py [-h] -t GAME_TYPE -a AGENT -u USERNAME [-g GAME_ID]
+```
+Note that a game will be created for you if you don't specify a game_id.
+
 
 ### Step 2: Creating your own bot
 
 #### Before we start: the GameState object and the GameMove object
+
+Coming back to the state and move objects. 
+
+As stated before, the State object has everything you need in the state, exactly as specified 
+by the API (almost).
+
+It has the following fields:
+- `players`
+- `stage`
+- `can_move`
+- `winners`
+- `game_state`
 
 #### Implementing [your_own_bot.py](/connect_4/your_own_bot.py)
 
@@ -92,21 +174,21 @@ This step is also game agnostic.
 From the moment when the game has started, one can ask the server for the state of the game at `GET /{game_id}/get-state`.
 The request would return you a JSON object resembling to the following:
 
-```json
+```js
 {
-  "players": [
+  players: [
     "player1",
     "player2"
   ], // The players in the game
-  "stage": "in_progress",
-  "last_updated": "[SOME TIMESTAMP]",
-  "can_move": [
+  stage: "in_progress",
+  last_updated: "[SOME TIMESTAMP]",
+  can_move: [
     "player1"
   ], // Who's turn it is to play
-  "winners": [],
-  "payload": {
-    "game_type": "connect_4",
-    "cells": [[]] // AN ARRAY OF CONNECT 4 COLUMNS
+  winners: [],
+  payload: {
+    game_type: "connect_4",
+    cells: [[]] // AN ARRAY OF CONNECT 4 COLUMNS
   }
 }
 ```
@@ -152,7 +234,4 @@ get the state again and proceed.
 
 #### Overall workflow
 
-TODO IMAGE DIAGRAM
-
-
-
+![](./img/client_flowchart.png)

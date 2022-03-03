@@ -20,27 +20,27 @@ class SnakeMove(wrapper.GenericGameMove):
 
 
 class SnakeState(wrapper.GenericGameState):
-    MIN_X = -100
-    MIN_Y = -100
-    MAX_X = 100
-    MAX_Y = 100
 
     def __init__(self):
         super(SnakeState, self).__init__()
+        self.world_min = None
+        self.world_max = None
 
     def update_game_state(self, encoded_game_state: dict):
         super(SnakeState, self).update_game_state(encoded_game_state)
+        self.world_min = self.game_state['world_min']
+        self.world_max = self.game_state['world_max']
 
     def valid_moves(self, username: str):
         moves = []
         players = self.game_state["players"]
         if username in players:
-            if players[username][0]["x"] < SnakeState.MAX_X:
+            if players[username][0]["x"] < self.world_max['x']:
                 moves.append("right")
-            if players[username][0]["x"] > SnakeState.MIN_X:
+            if players[username][0]["x"] > self.world_min['x']:
                 moves.append("left")
-            if players[username][0]["y"] > SnakeState.MIN_Y:
+            if players[username][0]["y"] > self.world_min['y']:
                 moves.append("down")
-            if players[username][0]["y"] < SnakeState.MAX_Y:
+            if players[username][0]["y"] < self.world_max['x']:
                 moves.append("up")
         return moves
