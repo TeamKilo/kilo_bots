@@ -77,20 +77,6 @@ and output the next move it's going to play.__
 A bot is just a class like the following:
 
 ```python
-class Connect4RandomAgent(Connect4BaseAgent):
-    def get_next_move(self, state: Connect4State) -> Connect4Move:
-        # Get all the valid moves that one can make
-        valid_moves = []
-        for i, row in enumerate(state.game_state['cells']):
-            if len(row) < Connect4State.GAME_BOARD_HEIGHT:
-                valid_moves.append(i)
-        # Make a random move
-        return Connect4Move(random.choice(valid_moves))
-```
-
-This is a bot that will play a random valid move. 
-More generally, a bot looks like this:
-```python
 class Connect4Agent(Connect4BaseAgent):
     def __init__(self, username):
         self._username = username
@@ -126,7 +112,7 @@ Coming back to the state and move objects.
 As stated before, the State object has everything you need in the state, exactly as specified 
 by the API (almost).
 
-It has the following fields:
+It has the following fields: TODO finish writing this part
 - `players`
 - `stage`
 - `can_move`
@@ -135,9 +121,13 @@ It has the following fields:
 
 #### Implementing [your_own_bot.py](/connect_4/your_own_bot.py)
 
+TODO: Write a bot to play random moves.
+
 ## Advanced
 
 ### Implementing support for a new game
+
+TODO: Write a short doc on how to impl support for a new game.
 
 ### Implementing your own client -- API Workflow: how to communicate with the server
 
