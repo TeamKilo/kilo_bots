@@ -31,6 +31,17 @@ class GenericGameState:
         self.winners = []
         self.game_state = {}
 
+    def __str__(self):
+        return '''
+-----------------
+STATE OF GAME: {}
+players: {}
+can_move: {}
+winner: {}
+game-specific state:
+{}
+'''.format(self.stage, self.players, self.can_move, self.winners, self.game_state)
+
     def update_game_state(self, encoded_game_state: dict):
         """
         Update the game state stored in the object given a dict
