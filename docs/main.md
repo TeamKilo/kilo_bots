@@ -113,18 +113,101 @@ As stated before, the State object has everything you need in the state, exactly
 by the API (almost).
 
 It has the following fields: TODO finish writing this part
-- `players`
-- `stage`
-- `can_move`
-- `winners`
-- `game_state`
+- `players`: a list of active players
+- `stage`: one of "waiting" (game hasn't started yet), "in_progress", or "ended".
+- `can_move`: a list of players that are able to submit of move.
+- `winners`: a list of winners; for snake and connect 4, it's empty if the game is still in progress.
+- `game_state`: the game-specific state object, as specified in the API docs. For connect 4, its format resembles 
+the following:
+
+```json
+{
+  "game_type": "connect_4",
+  "cells": [[...]]
+}
+```
+where `cells`contains a list of lists, each representing a column of the connect 4 game, and each cell contains an
+active player's username.
+
+This is all encoded in the Connect4State class.
+
+For a Connect4State object, we've also created for you a `validate_move` method, that can validate a move for you, i.e. 
+tell you whether a move is legal. Of course, if you want to add more such utility methods in the Connect4State object, 
+feel free to extend it in your own discretion.
+
+The Game Move object is one used to encode your state. It has no other requirement than 
+being able to encode itself to a python dictionary (henceforth a JSON object) via the `encode_game_move`
+method.
+
+For Connect 4, the requirement is that the game move object must encode itself to something of the format:
+```json
+{
+  "game_type": "connect_4",
+  "column": n
+}
+```
+A Connect4Move object can be created just by calling its constructor: e.g. to make a move 
+on column 6 (btw columns are 0-indexed, meaning that they are 0-6 not 1-7), 
+we can call `Connect4Move(6)` to create an object as such.
 
 #### Implementing [your_own_bot.py](/connect_4/your_own_bot.py)
 
-TODO: Write a bot to play random moves.
+Now that you know what the State and Move objects are doing, let's try to implement a bot!
 
+First go to `/connect_4/your_own_bot.py`. You should see a template class ready for you:
+```python
+from .utils import Connect4State, Connect4Move
+from .agents import Connect4BaseAgent
+
+
+class Connect4UserDefinedAgent(Connect4BaseAgent):
+    def __init__(self, username):
+        self._username = username
+
+    def get_next_move(self, state: Connect4State) -> Connect4Move:
+        # TODO: IMPLEMENT
+        pass
+```
+
+All you need to do is to implement the `gen_next_move` method, which should, given a 
+Connect 4 game state object, return a Connect 4 game move object.
+
+First, let's create a bot that will just play a fixed move.
+```python
+def get_next_move(self, state: Connect4State) -> Connect4Move:
+    return Connect4Move(5)
+```
+If instead we want to choose a random number between 0 and 6, we can do:
+```python
+import random
+
+...
+    def get_next_move(self, state: Connect4State) -> Connect4Move:
+        return Connect4Move(random.choice([0,1,2,3,4,5,6]))
+```
+Where `random.choice(l)` basically chooses an element from the list `l` at random, uniformly.
+
+Now the problem is, we don't know if this move is going to be legal! It might be that the 
+column is full so we can't add anything anymore, and the server will return an error if we do so!
+
+So how do we validate a move? Fortunately, in the `state` object, we've got a method called `validate_move`, which takes in 
+a column number and returns true only if the move is legal. We then can do the following:
+```python
+def get_next_move(self, state: Connect4State) -> Connect4Move:
+    valid_moves = []
+    possible_moves = [0, 1, 2, 3, 4, 5, 6]
+    for move in possible_moves:
+        # If the move gets validated, we want to put it in the list
+        if state.validate_move(move):
+            valid_moves += [move]
+    return Connect4Move(random.choice(valid_moves))
+```
+Where we basically go through all the possible moves, and check which ones are valid; put them in a list 
+called `valid_moves`, and then choose randomly from them.
+
+Voilà! You just completed your very first bot for the Connect 4 game we implemented.
 ## Advanced
-
+This part covers some advanced topics and is not needed for the reader whom it doesn't interest.
 ### Implementing support for a new game
 
 TODO: Write a short doc on how to impl support for a new game.
