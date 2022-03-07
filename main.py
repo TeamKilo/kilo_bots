@@ -66,7 +66,9 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--agent', type=str, help="the agent to be run: i for interactive; r "
                                                         "for random; u for user-defined; "
                                                         "(only if game type is connect_4) "
-                                                        "m<t> where t=50|300|700|1000|3000(ms of computation time)",
+                                                        "m<t> where t=50|300|700|1000|3000(ms of computation time); "
+                                                        "(only if game type is snake) "
+                                                        "f for snake bot that goes for the first fruit in the list",
                         required=True)
     parser.add_argument('-u', '--username', type=str, help="the username given to the bot.", required=True)
     parser.add_argument('-g', '--game', type=str, help='the game id. If None, will create a new game.')
@@ -80,14 +82,14 @@ if __name__ == '__main__':
         "m700": Connect4MCTSAgent(parsed_args.username, 0.7, False),
         "m1000": Connect4MCTSAgent(parsed_args.username, 1, False),
         "m3000": Connect4MCTSAgent(parsed_args.username, 3, False),
-        "c": Connect4UserDefinedAgent(parsed_args.username)
+        "u": Connect4UserDefinedAgent(parsed_args.username)
     }
 
     snake_agent_map = {
         "i": SnakeInteractiveAgent(),
         "r": SnakeRandomAgent(parsed_args.username),
         "f": SnakeGoForFruitAgent(parsed_args.username),
-        "c": SnakeUserDefinedAgent(parsed_args.username)
+        "u": SnakeUserDefinedAgent(parsed_args.username)
     }
 
     if parsed_args.type == "connect_4":

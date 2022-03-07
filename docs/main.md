@@ -10,9 +10,9 @@ contain a tutorial of creating a bot using the code/libraries presented in this 
 Before you start trying to create a bot, there are a few things you might want to know. If you just 
 want to know how to implement a bot, please jump to the tutorial.
 
-### What games to we support
+### What games do we support
 
-We only support, in general, turn-based, discrete time, fixed player count multiplayer games 
+In general, we only support, turn-based, discrete time, fixed player count multiplayer games 
 for now. The two games we've implemented are Connect 4 and a turn-based multiplayer Snake. This has had 
 an impact on how we designed our API, as presented in the section below.
 
@@ -71,8 +71,14 @@ the move into the game-specific move format, as specified by the API specs.
 Of course, this has been provided for you in `<game>/utils.py` for each game supported.
 
 #### The bots available
-__A bot takes is something that has to take in the current game state as an input, 
+__A bot contains a function that takes in the current game state as an input, 
 and output the next move it's going to play.__
+
+The bots we have available f\textit{Last time when we had a networking supo (SV2), there was a question on whether we should use MACAW if we have a single base station; and you said that CSMA CA was enough because we don't have an "incomplete knowledge" problem (i.e. the AP knows everything. What exactly did you mean by that, and why exactly does that mean that we don't need MACAW? (Sorry I think I didn't completely understand this part and I was reading through my previous supo notes).}
+or Connect 4 are the following:
+- "r" for random
+- "i" for interactive
+- "m<t>" where t is 50, 100, 300, 700, or 1000: a bot using Monte Carlo Tree Search
 
 A bot is just a class like the following:
 
@@ -98,21 +104,30 @@ you can change the strength by changing the computation time.
 
 You can then run the bot you want by doing
 ```shell
-python main.py [-h] -t GAME_TYPE -a AGENT -u USERNAME [-g GAME_ID]
+python main.py -t GAME_TYPE -a AGENT -u USERNAME -g GAME_ID
 ```
-Note that a game will be created for you if you don't specify a game_id.
+Note that a game will be created for you if you don't specify a game_id, 
+by doing 
+```shell
+python main.py -t GAME_TYPE -a AGENT -u USERNAME
+```
 
+Also note that to run your own bot, you can implement your_own_bot.py and then run the bot 
+by writing `-a u`.
+
+To run a bot and play against it, you can create a game on the front-end or use the above command without a game_id specified.
+Then, copy the game_id that appears on your terminal, and go on the front-end to find the game and join it. Then you should be 
+able to play against your bot! To have your bot play against another bot, you can simply open another terminal window and
+run the same command with a different username, while not forgetting specifying your game_id to enter the right game!
 
 ### Step 2: Creating your own bot
 
-#### Before we start: the GameState object and the GameMove object
-
-Coming back to the state and move objects. 
+#### The GameState object and the GameMove object
 
 As stated before, the State object has everything you need in the state, exactly as specified 
 by the API (almost).
 
-It has the following fields: TODO finish writing this part
+It has the following fields: 
 - `players`: a list of active players
 - `stage`: one of "waiting" (game hasn't started yet), "in_progress", or "ended".
 - `can_move`: a list of players that are able to submit of move.
@@ -126,7 +141,7 @@ the following:
   "cells": [[...]]
 }
 ```
-where `cells`contains a list of lists, each representing a column of the connect 4 game, and each cell contains an
+where `cells` contains a list of lists, each representing a column of the connect 4 game, and each cell contains an
 active player's username.
 
 This is all encoded in the Connect4State class.
@@ -206,11 +221,14 @@ Where we basically go through all the possible moves, and check which ones are v
 called `valid_moves`, and then choose randomly from them.
 
 Voilà! You just completed your very first bot for the Connect 4 game we implemented.
+
+You can now run your bot by typing the following in your terminal. 
+```shell
+python main.py --type GAME_TYPE --agent u --username USERNAME --game GAME_ID
+```
+
 ## Advanced
 This part covers some advanced topics and is not needed for the reader whom it doesn't interest.
-### Implementing support for a new game
-
-TODO: Write a short doc on how to impl support for a new game.
 
 ### Implementing your own client -- API Workflow: how to communicate with the server
 
